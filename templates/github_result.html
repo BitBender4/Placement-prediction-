@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>GitHub Analyzer - Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/github.css') }}">
+
+<style>
+    :root {
+      --primary-color: #4e8cff;
+      --secondary-color: #6c757d;
+      --success-color: #29d09c;
+      --danger-color: #ff4b5c;
+      --warning-color: #ffc107;
+      --dark-color: #1a1a1a;
+      --light-color: #f9fafc;
+      --gradient-primary: linear-gradient(135deg, #4e8cff, #1e2a78);
+      --glass-bg: rgba(44, 62, 80, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #dff6ff, #b9e6ed);
+      color: var(--dark-color);
+    }
+
+    /* Menu Button */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      left: 10px;
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow-deep);
+      transition: transform 0.3s ease;
+    }
+    .menu-btn:hover { transform: scale(1.1); }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 0;
+      overflow-x: hidden;
+      backdrop-filter: blur(12px);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-deep);
+      transition: width 0.3s ease;
+      z-index: 1000;
+      padding-top: 60px;
+    }
+    .sidebar.open { width: 220px; padding: 60px 10px; }
+    .sidebar a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 15px;
+      margin-bottom: 5px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover { background: rgba(255,255,255,0.1); }
+
+    .card.text-center {
+      text-align: center;
+      color: rgb(5, 2, 212);
+      background-color: #e7ebf3;
+      box-shadow: #4e8cff;
+    }
+
+    /* Cards */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: var(--shadow-deep);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    h1, h2, h3, h4, h5 { font-weight: 700; color: rgb(0, 54, 153); }
+  </style>
+
+</head>
+
+<body class="bg-light">
+  <!-- Navbar -->
+<nav>
+    <button class="menu-btn" id="menuBtn">☰</button>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('resume_index') }}">Resume Analyzer</a>
+    <a href="{{ url_for('github_index') }}">GitHub Analyzer</a>
+    <a href="{{ url_for('chatbot') }}">Chatbot</a>
+    <a href="{{ url_for('about') }}">ℹ About Us</a>
+</div>
+
+  <div class="wrap">
+    <h1>GitHub Analyzer</h1>
+
+    <!-- <a href="{{ url_for('github_index') }}" class="back-btn">🔙 Back to Search</a> -->
+
+    <div class="card profile">
+      <div class="left">
+        <img src="{{ data.avatar_url }}" alt="avatar" class="avatar" />
+        <a class="view-profile" href="{{ data.profile_url }}" target="_blank">View GitHub Profile</a>
+      </div>
+
+      <div class="right">
+        <h2>{{ data.name }} <span class="muted">(@{{ data.username }})</span></h2>
+        {% if data.bio %}<p class="bio">{{ data.bio }}</p>{% endif %}
+        <p class="meta">
+          {% if data.location %}📍 {{ data.location }} &nbsp;•&nbsp;{% endif %}
+          Joined {{ data.created_at }} &nbsp;•&nbsp; Followers: {{ data.followers }}
+          &nbsp;•&nbsp; Following: {{ data.following }}
+        </p>
+
+        <div class="stats">
+          <div class="stat" data-target="{{ data.public_repos }}">Repos<br><strong>0</strong></div>
+          <div class="stat" data-target="{{ data.total_stars }}">Stars<br><strong>0</strong></div>
+          <div class="stat" data-target="{{ data.total_forks }}">Forks<br><strong>0</strong></div>
+          <div class="stat" data-target="{{ data.total_watchers }}">Watchers<br><strong>0</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Language Breakdown</h3>
+      {% if data.languages %}
+        <canvas id="langChart" class="chart"
+          data-labels='{{ data.languages.keys()|list|tojson }}'
+          data-values='{{ data.languages.values()|list|tojson }}'>
+        </canvas>
+      {% else %}
+        <p class="muted">No languages detected.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3>Most Popular Repository</h3>
+      {% if data.most_popular %}
+        <p><a href="{{ data.most_popular.html_url }}" target="_blank"><strong>{{ data.most_popular.name }}</strong></a></p>
+        <p class="muted">⭐ {{ data.most_popular.stargazers_count }} &nbsp; • &nbsp; {{ data.most_popular.language or 'Unknown' }}</p>
+        <p>{{ data.most_popular.description }}</p>
+      {% else %}
+        <p class="muted">No repositories found.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3>Recent Activity</h3>
+      {% if data.recent_repos %}
+        <ul class="recent-list">
+          {% for r in data.recent_repos %}
+            <li>
+              <a href="{{ r.html_url }}" target="_blank">{{ r.name }}</a>
+              <span class="muted"> — pushed {{ r.pushed_at_fmt }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No recent activity found.</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{{ url_for('static', filename='js/github.js') }}"></script>
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>

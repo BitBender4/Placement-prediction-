@@ -1,0 +1,106 @@
+[
+    {
+        "timestamp": "2025-08-19 13:20:59",
+        "placement": null,
+        "salary": null,
+        "expected_salary": 0
+    },
+    {
+        "timestamp": "2025-08-19 13:31:31",
+        "placement": null,
+        "salary": null,
+        "expected_salary": 0
+    },
+    {
+        "timestamp": "2025-08-23 19:31:55",
+        "cgpa": "9.8",
+        "technical_skills": "0",
+        "projects": "2",
+        "placement_probability": 100.0,
+        "expected_salary": 42.33,
+        "status": "Placed",
+        "skill_suggestions": [
+            "Consider learning DSA",
+            "Consider learning Python",
+            "Consider learning JavaScript",
+            "Consider learning CSS",
+            "Consider learning Coding Club"
+        ]
+    },
+    {
+        "timestamp": "2025-08-23 19:31:57",
+        "cgpa": "9.8",
+        "technical_skills": "0",
+        "projects": "2",
+        "placement_probability": 100.0,
+        "expected_salary": 42.33,
+        "status": "Placed",
+        "skill_suggestions": [
+            "Consider learning DSA",
+            "Consider learning Python",
+            "Consider learning JavaScript",
+            "Consider learning CSS",
+            "Consider learning Coding Club"
+        ]
+    },
+    {
+        "timestamp": "2025-08-23 21:33:27",
+        "cgpa": "6.58",
+        "technical_skills": "0",
+        "projects": "2",
+        "placement_probability": 100.0,
+        "expected_salary": 32.52,
+        "status": "Placed",
+        "skill_suggestions": [
+            "Consider learning DSA",
+            "Consider learning Python",
+            "Consider learning JavaScript",
+            "Consider learning CSS",
+            "Consider learning Coding Club"
+        ]
+    },
+    {
+        "timestamp": "2025-08-23 22:56:23",
+        "cgpa": "6.58",
+        "technical_skills": "1",
+        "projects": "2",
+        "placement_probability": 0.0,
+        "expected_salary": 0.0,
+        "status": "Not Placed",
+        "skill_suggestions": [
+            "Focus on improving placement chances first."
+        ]
+    },
+    {
+        "timestamp": "2025-08-24 21:43:52",
+        "cgpa": "6.58",
+        "technical_skills": "0",
+        "projects": "2",
+        "placement_probability": 100.0,
+        "expected_salary": 31.82,
+        "status": "Placed",
+        "skill_suggestions": [
+            "Consider learning DSA",
+            "Consider learning Python",
+            "Consider learning JavaScript",
+            "Consider learning CSS",
+            "Consider learning Coding Club"
+        ]
+    },
+    {
+        "timestamp": "2025-08-25 11:08:07",
+        "cgpa": "9.8",
+        "technical_skills": "1",
+        "projects": "10",
+        "placement_probability": 100.0,
+        "expected_salary": 42.94,
+        "status": "Placed",
+        "skill_suggestions": [
+            "Consider learning Machine Learning",
+            "Consider learning DSA",
+            "Consider learning JavaScript",
+            "Consider learning CSS",
+            "Consider learning Coding Club"
+        ]
+    }
+]

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placement Prediction Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<style>
+    :root {
+      --primary-color: #4e8cff;
+      --secondary-color: #6c757d;
+      --success-color: #29d09c;
+      --danger-color: #ff4b5c;
+      --warning-color: #ffc107;
+      --dark-color: #1a1a1a;
+      --light-color: #f9fafc;
+      --gradient-primary: linear-gradient(135deg, #4e8cff, #1e2a78);
+      --glass-bg: rgba(44, 62, 80, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #dff6ff, #b9e6ed);
+      color: var(--dark-color);
+    }
+
+    /* Menu Button */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      left: 10px;
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow-deep);
+      transition: transform 0.3s ease;
+    }
+    .menu-btn:hover { transform: scale(1.1); }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 0;
+      overflow-x: hidden;
+      backdrop-filter: blur(12px);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-deep);
+      transition: width 0.3s ease;
+      z-index: 1000;
+      padding-top: 60px;
+    }
+    .sidebar.open { width: 220px; padding: 60px 10px; }
+    .sidebar a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 15px;
+      margin-bottom: 5px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover { background: rgba(255,255,255,0.1); }
+
+    .card.text-center {
+      text-align: center;
+      color: rgb(5, 2, 212);
+      background-color: #e7ebf3;
+      box-shadow: #4e8cff;
+    }
+
+    /* Cards */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: var(--shadow-deep);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    h1, h2, h3, h4, h5 { font-weight: 700; color: rgb(0, 54, 153); }
+  </style>
+</head>
+<body class="bg-light">
+  <!-- Navbar -->
+<nav>
+    <button class="menu-btn" id="menuBtn">☰</button>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('resume_index') }}">Resume Analyzer</a>
+    <a href="{{ url_for('github_index') }}">GitHub Analyzer</a>
+    <a href="{{ url_for('chatbot') }}">Chatbot</a>
+    <a href="{{ url_for('about') }}">ℹ About Us</a>
+</div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="fas fa-graduation-cap me-2"></i>Placement Predictor
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/dashboard">Dashboard</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Header -->
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1><i class="fas fa-chart-line me-2"></i>Analytics Dashboard</h1>
+          <button class="btn btn-primary" onclick="refreshDashboard()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh Data
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row g-4 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="card metric-card bg-primary text-white">
+      <div class="card-body d-flex justify-content-between">
+        <div>
+          <h6 class="card-title">Total Students</h6>
+          <p class="display-6">{{ stats.total_students }}</p>
+        </div>
+        <div class="metric-icon"><i class="fas fa-users fa-2x"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card metric-card bg-success text-white">
+      <div class="card-body d-flex justify-content-between">
+        <div>
+          <h6 class="card-title">Placement Rate</h6>
+          <p class="display-6">{{ stats.placement_rate }}%</p>
+        </div>
+        <div class="metric-icon"><i class="fas fa-chart-line fa-2x"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card metric-card bg-info text-white">
+      <div class="card-body d-flex justify-content-between">
+        <div>
+          <h6 class="card-title">Avg. Expected Salary</h6>
+          <p class="display-6">₹{{ stats.average_salary }}</p>
+        </div>
+        <div class="metric-icon"><i class="fas fa-money-bill-wave fa-2x"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card metric-card bg-warning text-white">
+      <div class="card-body d-flex justify-content-between">
+        <div>
+          <h6 class="card-title">Model Accuracy</h6>
+          <p class="display-6">{{ stats.accuracy }}%</p>
+        </div>
+        <div class="metric-icon"><i class="fas fa-bullseye fa-2x"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Charts Row 1 -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-chart-bar me-2"></i>Feature Importance Analysis</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="featureImportanceChart" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-pie-chart me-2"></i>Placement Distribution</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="placementDistributionChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-clock me-2"></i>Prediction Activity Over Time</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="activityChart" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-money-check-alt me-2"></i>Salary Distribution</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="salaryDistributionChart" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills Analysis -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-cogs me-2"></i>Skills Suggestions</h5>
+          </div>
+          <div class="card-body">
+            <ul id="skillsSuggestionList" class="list-group list-group-flush mb-3"></ul>
+            <canvas id="skillsAnalysisChart" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-trophy me-2"></i>Top Success Factors</h5>
+          </div>
+          <div class="card-body">
+            <div id="successFactors">
+              <!-- Example of each success factor -->
+              <div class="success-factor mb-3">
+                <div class="d-flex justify-content-between">
+                  <span>Technical Skills</span>
+                  <span class="badge bg-primary">24%</span>
+                </div>
+                <div class="progress mt-1">
+                  <div class="progress-bar" style="width: 24%"></div>
+                </div>
+              </div>
+              <div class="success-factor mb-3">
+                <div class="d-flex justify-content-between">
+                  <span>CGPA</span>
+                  <span class="badge bg-primary">20%</span>
+                </div>
+                <div class="progress mt-1">
+                  <div class="progress-bar" style="width: 20%"></div>
+                </div>
+              </div>
+              <div class="success-factor mb-3">
+                <div class="d-flex justify-content-between">
+                  <span>Project Count</span>
+                  <span class="badge bg-primary">18%</span>
+                </div>
+                <div class="progress mt-1">
+                  <div class="progress-bar" style="width: 18%"></div>
+                </div>
+              </div>
+              <div class="success-factor mb-3">
+                <div class="d-flex justify-content-between">
+                  <span>Communication</span>
+                  <span class="badge bg-primary">16%</span>
+                </div>
+                <div class="progress mt-1">
+                  <div class="progress-bar" style="width: 16%"></div>
+                </div>
+              </div>
+              <div class="success-factor mb-3">
+                <div class="d-flex justify-content-between">
+                  <span>Internships</span>
+                  <span class="badge bg-primary">14%</span>
+                </div>
+                <div class="progress mt-1">
+                  <div class="progress-bar" style="width: 14%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Predictions Table -->
+    <div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-history me-2"></i>Recent Predictions</h5>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>CGPA</th>
+              <th>Expected Salary</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in charts.salary_distribution.labels %}
+            <tr>
+              <td>{{ h }}</td>
+              <td>₹{{ charts.salary_distribution.values[loop.index0] }}</td>
+              <td>
+                {% if loop.index0 < stats.total_students and loop.index0 < stats.total_students %}
+                  {% if loop.index0 < stats.total_students %}
+                    <span class="badge {% if loop.index0 < stats.total_students and stats.placement_rate > 50 %}bg-success{% else %}bg-danger{% endif %}">
+                      {% if stats.placement_rate > 50 %}Placed{% else %}Not Placed{% endif %}
+                    </span>
+                  {% endif %}
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" class="text-center text-muted">No predictions available</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Model Training Modal -->
+    <div class="modal fade" id="trainingModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Model Training</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center">
+              <div class="spinner-border text-primary mb-3" role="status"></div>
+              <h5>Training ML Models...</h5>
+              <p>This may take a few moments. Please wait.</p>
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script> -->
+  <!-- Load Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Load your custom dashboard logic -->
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<script>
+  // Function to render all charts (excluding skills analysis chart)
+  function loadCharts(data) {
+    // Feature Importance Chart
+    const featureCtx = document.getElementById("featureImportanceChart").getContext("2d");
+    if(window.featureChart) window.featureChart.destroy();
+    window.featureChart = new Chart(featureCtx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(data.feature_importance),
+        datasets: [{
+          label: 'Importance',
+          data: Object.values(data.feature_importance),
+          backgroundColor: 'rgba(54, 162, 235, 0.6)'
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    // Placement Distribution Pie Chart
+    const placementCtx = document.getElementById("placementDistributionChart").getContext("2d");
+    if(window.placementChart) window.placementChart.destroy();
+    window.placementChart = new Chart(placementCtx, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(data.placement_distribution),
+        datasets: [{
+          data: Object.values(data.placement_distribution),
+          backgroundColor: ['#dc3545', '#28a745']
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    // Salary Distribution Bar Chart
+    const salaryCtx = document.getElementById("salaryDistributionChart").getContext("2d");
+    if(window.salaryChart) window.salaryChart.destroy();
+    window.salaryChart = new Chart(salaryCtx, {
+      type: 'bar',
+      data: {
+        labels: data.salary_distribution.map((_, i) => `Prediction ${i+1}`),
+        datasets: [{
+          label: 'Expected Salary',
+          data: data.salary_distribution,
+          backgroundColor: 'rgba(255, 206, 86, 0.6)'
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    // Prediction Activity Over Time Line Chart
+      const activityCtx = document.getElementById("activityChart").getContext("2d");
+      new Chart(activityCtx, {
+        type: 'line',
+        data: {
+          labels: data.activity_over_time.map(a => a.timestamp),
+          datasets: [{
+            label: 'Predictions',
+            data: data.activity_over_time.map(a => a.count),
+            fill: false,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            tension: 0.3
+          }]
+        }
+      });
+    }
+
+  // Function to load recent predictions table
+  function loadRecentPredictions(predictions) {
+    const tableBody = document.getElementById("recentPredictionsTableBody");
+    tableBody.innerHTML = "";
+    if (!predictions || predictions.length === 0) {
+      tableBody.innerHTML = `<tr>
+        <td colspan="7" class="text-center text-muted">No predictions available</td>
+      </tr>`;
+      return;
+    }
+    predictions.forEach(pred => {
+      tableBody.innerHTML += `
+        <tr>
+          <td>${pred.timestamp || '-'}</td>
+          <td>${pred.cgpa ?? '-'}</td>
+          <td>${pred.technical_skills ?? '-'}</td>
+          <td>${pred.projects ?? '-'}</td>
+          <td>${pred.placement_probability ?? '-'}%</td>
+          <td>₹${pred.expected_salary ?? '-'}</td>
+          <td>
+            <span class="badge ${pred.status === "Placed" ? "bg-success" : "bg-danger"}">
+              ${pred.status ?? '-'}
+            </span>
+          </td>
+        </tr>`;
+    });
+  }
+
+  function updateSkillSuggestions(suggestionsList) {
+    const listElement = document.getElementById("skillsSuggestionList");
+    listElement.innerHTML = "";  // Clear old suggestions
+
+    // Take suggestions only from the latest batch (already limited in API)
+    const allSuggestions = [...new Set(suggestionsList.flat())];
+
+    if (allSuggestions.length === 0) {
+        listElement.innerHTML = "<li class='list-group-item text-muted'>No suggestions available</li>";
+        return;
+    }
+
+    allSuggestions.forEach(skill => {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.textContent = skill;
+        listElement.appendChild(li);
+    });
+  }
+
+
+  // Fetch dashboard data and update everything
+  function refreshDashboard() {
+    fetch("/api/dashboard-data")
+      .then(res => res.json())
+      .then(data => {
+        // Update metric cards
+        document.querySelector(".metric-card.bg-primary p.display-6").innerText = data.total_predictions;
+        document.querySelector(".metric-card.bg-success p.display-6").innerText = data.placement_rate + "%";
+        document.querySelector(".metric-card.bg-info p.display-6").innerText = "₹" + data.avg_salary;
+        document.querySelector(".metric-card.bg-warning p.display-6").innerText = data.accuracy + "%";
+
+        // Update skill suggestions first
+        updateSkillSuggestions(data.skill_suggestions);
+
+        // Then update recent predictions table
+        loadRecentPredictions(data.recent_predictions);
+
+        // Finally, update charts
+        loadCharts(data);
+      })
+      .catch(error => console.error("Error loading dashboard data:", error));
+  }
+
+  // Initial load
+  document.addEventListener("DOMContentLoaded", refreshDashboard);
+
+  // Auto-refresh every 10 seconds
+  setInterval(refreshDashboard, 10000);
+</script>
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>

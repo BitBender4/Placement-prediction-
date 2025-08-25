@@ -1,0 +1,48 @@
+John Doe
+Email: john.doe@example.com
+Phone: +91-9876543210
+LinkedIn: linkedin.com/in/johndoe
+GitHub: github.com/johndoe
+
+Career Objective:
+To secure a challenging position in a reputable organization to expand my skills, contribute to team success, and enhance my career growth.
+
+Education:
+B.Tech in Computer Science, XYZ University (2019 - 2023)
+CGPA: 8.4/10
+
+Technical Skills:
+- Programming Languages: Python, Java, C++
+- Web Development: HTML, CSS, JavaScript, React.js
+- Databases: MySQL, MongoDB
+- Machine Learning: Scikit-learn, TensorFlow
+- Tools: Git, GitHub, VS Code
+
+Projects:
+1. Placement Prediction System
+   - Built a machine learning model to predict student placement chances.
+   - Tools: Python, Scikit-learn, Flask, HTML/CSS.
+
+2. Salary Prediction App
+   - Developed a salary prediction model using regression techniques.
+   - Tools: TensorFlow, Pandas, Matplotlib.
+
+3. Personal Portfolio Website
+   - Designed and deployed a personal portfolio to showcase projects.
+   - Tools: HTML, CSS, JavaScript.
+
+Internships:
+- Data Science Intern at ABC Tech Pvt. Ltd. (Jan 2023 - Apr 2023)
+  - Worked on predictive analytics projects.
+  - Developed data preprocessing pipelines.
+
+Achievements:
+- Solved 500+ problems on LeetCode.
+- Won 1st place in College Hackathon 2022.
+
+Extra-Curricular Activities:
+- Member of Coding Club.
+- Participated in Annual College Fest.
+
+References:
+Available on request.

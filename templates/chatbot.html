@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlacementBot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
+
+<style>
+    :root {
+      --primary-color: #4e8cff;
+      --secondary-color: #6c757d;
+      --success-color: #29d09c;
+      --danger-color: #ff4b5c;
+      --warning-color: #ffc107;
+      --dark-color: #1a1a1a;
+      --light-color: #f9fafc;
+      --gradient-primary: linear-gradient(135deg, #4e8cff, #1e2a78);
+      --glass-bg: rgba(44, 62, 80, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #dff6ff, #b9e6ed);
+      color: var(--dark-color);
+    }
+
+    /* Menu Button */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      left: 10px;
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow-deep);
+      transition: transform 0.3s ease;
+    }
+    .menu-btn:hover { transform: scale(1.1); }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 0;
+      overflow-x: hidden;
+      backdrop-filter: blur(12px);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-deep);
+      transition: width 0.3s ease;
+      z-index: 1000;
+      padding-top: 60px;
+    }
+    .sidebar.open { width: 220px; padding: 60px 10px; }
+    .sidebar a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 15px;
+      margin-bottom: 5px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover { background: rgba(255,255,255,0.1); }
+
+    .card.text-center {
+      text-align: center;
+      color: rgb(5, 2, 212);
+      background-color: #e7ebf3;
+      box-shadow: #4e8cff;
+    }
+
+    /* Cards */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: var(--shadow-deep);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    h1, h2, h3, h4, h5 { font-weight: 700; color: rgb(0, 54, 153); }
+  </style>
+
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+<nav>
+    <button class="menu-btn" id="menuBtn">☰</button>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('resume_index') }}">Resume Analyzer</a>
+    <a href="{{ url_for('github_index') }}">GitHub Analyzer</a>
+    <a href="{{ url_for('chatbot') }}">Chatbot</a>
+    <a href="{{ url_for('about') }}">ℹ About Us</a>
+</div>
+
+<div class="container">
+    <header>
+        <h1>PlacementBot</h1>
+    </header>
+    <main>
+        <div class="chat-window">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Ask anything...">
+                <button id="sendButton" type="button">Send</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+
+<script>
+document.getElementById("sendButton").addEventListener("click", sendMessage);
+document.getElementById("userInput").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        sendMessage();
+    }
+});
+
+function sendMessage() {
+    const inputField = document.getElementById("userInput");
+    const message = inputField.value.trim();
+    if (!message) return;
+
+    const chatMessages = document.getElementById("chatMessages");
+
+    // ✅ Show user message
+    chatMessages.innerHTML += `<div class="user-message message"><b>You:</b> ${message}</div>`;
+
+    // Add typing indicator
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "bot-message message typing";
+    typingDiv.innerHTML = "Bot is typing...";
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Send to Flask backend
+    fetch("/get", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ msg: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        typingDiv.remove(); // Remove typing indicator
+
+        // ✅ Show bot response
+        chatMessages.innerHTML += `<div class="bot-message message"><b>Bot:</b> ${data.response}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    })
+    .catch(error => {
+        typingDiv.remove();
+        chatMessages.innerHTML += `<div class="error-message"><b>Error:</b> ${error}</div>`;
+    });
+
+    inputField.value = "";
+}
+
+</script>
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+</script>
+</body>
+</html>

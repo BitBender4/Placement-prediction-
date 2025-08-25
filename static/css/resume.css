@@ -1,0 +1,44 @@
+body {
+  background-color: #a09bc6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+}
+
+.list-group-item ul {
+  margin-top: 0.5rem;
+  padding-left: 1.2rem;
+}
+
+pre {
+  font-size: 0.9rem;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.btn-primary {
+  background-color: #09074b;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #1e40af;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url("{{url_for('static',filename='images/resume.jpg')}}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}

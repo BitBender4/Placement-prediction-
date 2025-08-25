@@ -1,0 +1,65 @@
+------------------------------------------------------------
+                        Akash Patel
+            Email: akash.patel@email.com | +91-9988776655
+            LinkedIn: linkedin.com/in/akashpatel
+            Location: Ahmedabad, Gujarat, India
+------------------------------------------------------------
+
+Career Objective
+----------------
+Software Engineer with 4+ years of experience in software development, skilled in data structures, algorithms, and object-oriented programming. Proven expertise in building scalable applications using Java and Python. Seeking to apply problem-solving and coding skills to challenging roles.
+
+Technical Skills
+----------------
+- Programming Languages: Java, Python, JavaScript (ES6+)
+- Data Structures & Algorithms: Arrays, Linked Lists, Trees, Graphs, Sorting & Searching, Dynamic Programming
+- Frameworks & Libraries: Spring Boot, Django, React.js
+- Databases: MySQL, MongoDB, PostgreSQL
+- DevOps Tools: Jenkins, Docker, Kubernetes, Git
+- Cloud Platforms: AWS (EC2, S3, Lambda)
+- Concepts: Object-Oriented Programming (OOP), Design Patterns, RESTful API development, Microservices architecture, Agile & Scrum
+
+Professional Experience
+-----------------------
+Software Engineer | TechCorp Solutions, Ahmedabad
+July 2020 – Present
+- Designed and implemented efficient algorithms and data structures to optimize backend services, reducing response time by 30%.
+- Developed RESTful APIs using Spring Boot applying OOP principles and data structure optimization techniques.
+- Automated CI/CD pipelines using Jenkins and Docker, improving deployment efficiency by 45%.
+- Collaborated with front-end team to integrate React.js applications, enhancing user experience.
+- Participated in Agile Scrum ceremonies to deliver high-quality software.
+
+Software Developer Intern | InfoTech Pvt Ltd, Ahmedabad
+Jan 2020 – June 2020
+- Applied knowledge of data structures and algorithms to develop web app modules using Django.
+- Performed unit testing and bug fixes to improve application stability.
+- Prepared documentation for technical workflows.
+
+Education
+---------
+Bachelor of Engineering in Computer Science
+Gujarat Technological University, Ahmedabad
+Graduated: May 2020 | CGPA: 8.3/10
+
+Certifications
+--------------
+- AWS Certified Developer – Associate (2023)
+- Oracle Certified Professional, Java SE 8 Programmer (2022)
+- Data Structures and Algorithms Specialization – Coursera (2021)
+
+Key Projects
+------------
+Algorithmic Stock Trading System (Java, Algorithms)
+- Developed a stock trading system using advanced data structures and algorithms for real-time decision making.
+- Implemented sorting, searching, and graph algorithms to optimize trade execution.
+
+E-commerce Platform (Spring Boot, React.js)
+- Designed scalable backend services leveraging object-oriented design and algorithmic optimization.
+
+Languages
+---------
+English (Fluent), Hindi (Native), Gujarati (Fluent)
+
+References
+----------
+Available upon request.
